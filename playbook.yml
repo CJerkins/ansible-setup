@@ -2,6 +2,18 @@
   connection: local
   become: true
   tasks:
+  - name: "Update repositories cache Ubuntu"
+    apt:
+      update_cache: yes
+    when: ansible_facts['os_family'] == "Debian"
+  - name: "Update repositories cache Ubuntu"
+    apt:
+      upgrade: true
+      state: latest
+    when: 
+      - ansible_facts['os_family'] == "Debian"
+      - keep_packages_updated  
+
   - name: Install apt packages
     ansible.builtin.package:
       name:
@@ -11,7 +23,12 @@
         - curl
         - iptables-persistent
         - wget
+        - htop
         - software-properties-common
+        - neofetch
+        - tmux
+        - nload
+        - autossh
       state: latest
   - name: Create a directory if it does not exist
     ansible.builtin.file:

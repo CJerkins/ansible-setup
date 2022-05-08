@@ -60,7 +60,7 @@ ansible-galaxy install geerlingguy.security
 ### Block ping incoming REF: https://www.tecmint.com/block-ping-icmp-requests-to-linux/
 
 ### Install CasaOS
-'curl -fsSL https://get.icewhale.io/casaos.sh | bash'
+`curl -fsSL https://get.icewhale.io/casaos.sh | bash`
 
 
 
