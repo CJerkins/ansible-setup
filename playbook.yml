@@ -13,12 +13,18 @@
         - wget
         - software-properties-common
       state: latest
-
-- name: Set authorized key taken from file
-  ansible.posix.authorized_key:
-    user: drok
-    state: present
-    key: "{{ lookup('file', 'ssh.pub') }}"
+  - name: Create a directory if it does not exist
+    ansible.builtin.file:
+      path: /home/drok/.ssh
+      state: directory
+      mode: '0700'
+  - name: Copy file with owner and permissions
+    ansible.builtin.copy:
+      src: ssh.pub
+      dest: /home/drok/.ssh/authorized_keys
+      owner: drok
+      group: drok
+      mode: '0644'
 
 - hosts: localhost
   connection: local
