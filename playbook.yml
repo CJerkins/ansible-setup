@@ -1,0 +1,50 @@
+- hosts: localhost
+  connection: local
+  become: yes
+  tasks:
+  - name: Install apt packages
+    ansible.builtin.package:
+      name:
+        - vim
+        - git
+        - apt-transport-https
+        - curl
+        - iptables-persistent
+        - wget
+        - software-properties-common
+      state: latest
+
+- name: Set authorized key taken from file
+  ansible.posix.authorized_key:
+    user: drok
+    state: present
+    key: "{{ lookup('file', 'ssh.pub') }}"
+
+- hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    swap_file_size_mb: '8192'
+    security_sudoers_passworded:
+      - drok
+    security_autoupdate_mail_to: "drok@drokdev.pro"
+    security_autoupdate_mail_on_error: true
+    security_ssh_port: 2020
+    firewall_disable_ufw: true
+    firewall_disable_firewalld: true
+    firewall_allowed_tcp_ports:
+      - "2020"
+      - "89"
+      # - "12798"
+      # - "9091"
+      # - "3000"
+      # - "5000"
+      # - "9090"
+    # firewall_additional_rules:
+    #   - "iptables -A INPUT --proto icmp -j DROP"
+  roles:
+    - geerlingguy.swap
+    - geerlingguy.clamav
+    - geerlingguy.security
+    - geerlingguy.firewall
+
