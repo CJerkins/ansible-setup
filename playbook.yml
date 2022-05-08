@@ -17,6 +17,8 @@
     ansible.builtin.file:
       path: /home/drok/.ssh
       state: directory
+      owner: drok
+      group: drok
       mode: '0700'
   - name: Copy file with owner and permissions
     ansible.builtin.copy:
