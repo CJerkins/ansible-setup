@@ -1,6 +1,6 @@
 - hosts: localhost
   connection: local
-  become: yes
+  become: true
   tasks:
   - name: Install apt packages
     ansible.builtin.package:
@@ -22,7 +22,7 @@
 
 - hosts: localhost
   connection: local
-  become: yes
+  become: true
   vars:
     swap_file_size_mb: '8192'
     security_sudoers_passworded:
