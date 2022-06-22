@@ -30,20 +30,20 @@
         - nload
         - autossh
       state: latest
-  - name: Create a directory if it does not exist
-    ansible.builtin.file:
-      path: /home/drok/.ssh
-      state: directory
-      owner: drok
-      group: drok
-      mode: '0700'
-  - name: Copy file with owner and permissions
-    ansible.builtin.copy:
-      src: ssh.pub
-      dest: /home/drok/.ssh/authorized_keys
-      owner: drok
-      group: drok
-      mode: '0644'
+#  - name: Create a directory if it does not exist
+#    ansible.builtin.file:
+#      path: /home/drok/.ssh
+#      state: directory
+#      owner: drok
+#      group: drok
+#      mode: '0700'
+#  - name: Copy file with owner and permissions
+#    ansible.builtin.copy:
+#      src: ssh.pub
+#      dest: /home/drok/.ssh/authorized_keys
+#      owner: drok
+#      group: drok
+#      mode: '0644'
 
 - hosts: localhost
   connection: local
