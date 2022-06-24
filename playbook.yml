@@ -12,7 +12,6 @@
       state: latest
     when: 
       - ansible_facts['os_family'] == "Debian"
-      - keep_packages_updated  
 
   - name: Install apt packages
     ansible.builtin.package:
