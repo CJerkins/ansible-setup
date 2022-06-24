@@ -49,8 +49,8 @@
   become: true
   vars:
     swap_file_size_mb: '8192'
-    security_sudoers_passworded:
-      - drok
+    #security_sudoers_passworded: ### this is breaking the user password
+    #  - drok
     security_autoupdate_mail_to: "drok@drokdev.pro"
     security_autoupdate_mail_on_error: true
     security_ssh_port: 2020
