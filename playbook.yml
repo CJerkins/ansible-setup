@@ -29,6 +29,9 @@
         - nload
         - autossh
       state: latest
+  - name: Run a script crowdsec script
+    ansible.builtin.script:
+      cmd: after_playbook.sh
 
 - hosts: localhost
   connection: local
@@ -90,4 +93,6 @@
     - geerlingguy.security
     - geerlingguy.firewall
     - geerlingguy.docker
-    - veselahouba.crowdsec
+    #- veselahouba.crowdsec
+    
+  
