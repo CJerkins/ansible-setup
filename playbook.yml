@@ -90,3 +90,4 @@
     - geerlingguy.security
     - geerlingguy.firewall
     - geerlingguy.docker
+    - veselahouba.crowdsec
