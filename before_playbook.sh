@@ -5,4 +5,5 @@ ansible-galaxy install geerlingguy.clamav
 ansible-galaxy install geerlingguy.firewall
 ansible-galaxy install geerlingguy.security
 ansible-galaxy install geerlingguy.docker
+ansible-galaxy install veselahouba.crowdsec
 #sudo timeshift --create --comment "First Snapshot"
