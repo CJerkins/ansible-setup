@@ -34,7 +34,7 @@
   connection: local
   become: true
   vars:
-    swap_file_size_mb: '8192'
+    swap_file_size_mb: '4000'
     #security_sudoers_passworded: ### this is breaking the user password
     #  - drok
     docker_install_compose_plugin: false
