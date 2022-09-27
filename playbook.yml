@@ -29,20 +29,6 @@
         - nload
         - autossh
       state: latest
-#  - name: Create a directory if it does not exist
-#    ansible.builtin.file:
-#      path: /home/drok/.ssh
-#      state: directory
-#      owner: drok
-#      group: drok
-#      mode: '0700'
-#  - name: Copy file with owner and permissions
-#    ansible.builtin.copy:
-#      src: ssh.pub
-#      dest: /home/drok/.ssh/authorized_keys
-#      owner: drok
-#      group: drok
-#      mode: '0644'
 
 - hosts: localhost
   connection: local
@@ -51,28 +37,56 @@
     swap_file_size_mb: '8192'
     #security_sudoers_passworded: ### this is breaking the user password
     #  - drok
-    security_autoupdate_mail_to: "drok@drokdev.pro"
+    docker_install_compose_plugin: false
+    docker_packages_state: present # absent to delete
+    docker_service_manage: true # set to false to disable on boot
+    docker_users:
+      - drok
+    security_autoupdate_mail_to: "admin@drokdev.pro"
     security_autoupdate_mail_on_error: true
-    security_ssh_port: 2020
+    security_ssh_port: 22
     firewall_disable_ufw: true
     firewall_disable_firewalld: true
     firewall_flush_rules_and_chains: true
     firewall_allowed_tcp_ports:
-      - "2020"
-      - "89"
+      - "22"
+      #- "89"
       # - "12798"
       # - "9091"
       # - "3000"
       # - "5000"
       # - "9090"
-    #firewall_additional_rules:
-    #  - "iptables -A OUTPUT -d 192.168.12.0/24 -j ACCEPT"
-    #  - "iptables -A INPUT --proto icmp -d 192.168.0.0/16,172.16.0.0/16,10.0.0.0/8 -j DROP"
-    #  - "iptables -A OUTPUT -d 192.168.0.0/16,10.0.0.0/8 -j DROP"
-    #  - "iptables -P INPUT DROP"
+    firewall_additional_rules:
+      - "iptables -D INPUT --proto icmp"
+      - "iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT"
+      # - "iptables -A INPUT -i eth0 -p tcp --s 172.16.10.116 --dports 22 -j ACCEPT"
+      # - "iptables -A INPUT -i wg0 --proto icmp -j ACCEPT" # admin-net rules
+      # - "iptables -A INPUT -i wg0 -j ACCEPT" # admin-net rules
+      # - "iptables -A INPUT -i wg1 --proto icmp -j ACCEPT" # monitor-net rules
+      # - "iptables -A INPUT -i wg1 -p tcp --pport 6556 -j ACCEPT" # monitor-net rules
+      - "iptables -A OUTPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT"
+      - "iptables -A OUTPUT -m conntrack --ctstate INVALID -j DROP"
+      - "iptables -A OUTPUT -p udp --sport 68 --dport 67 -j ACCEPT"
+      - "iptables -A OUTPUT -p tcp -m multiport --dports 53,80,443 -m conntrack --ctstate NEW -j ACCEPT"
+      - "iptables -A OUTPUT -p udp -m multiport --dports 53,123 -j ACCEPT"
+      - "iptables -A OUTPUT -o lo -j ACCEPT"
+      # - "iptables -A OUTPUT -o eth0 -d region1.v2.argotunnel.com,region2.v2.argotunnel.com -j ACCEPT" # Cloudflared rules
+      # - "iptables -A OUTPUT -o eth0 -d 192.168.0.0/16,172.16.0.0/12,10.0.0.0/8 -j DROP" # Control out going traffic
+      - "iptables -A OUTPUT -o eth0 --proto icmp -j ACCEPT"
+      # - "iptables -A OUTPUT -o wg0 --proto icmp -j DROP" # admin-net rules
+      # - "iptables -A OUTPUT -o wg0 -j ACCEPT" # admin-net rules
+      # - "iptables -A OUTPUT -o wg1 --proto icmp -j DROP" # monitor-net rules
+      # - "iptables -A OUTPUT -o wg1 -p tcp -dport 5000 -j ACCEPT" # monitor-net rules
+      # - "iptables -A FORWARD -i wg0 -o eth0 -j ACCEPT"
+      # - "iptables -A FORWARD -i wg1 -o eth0 -j ACCEPT" # monitor-net rules
+      - "iptables -A FORWARD -p icmp -j ACCEPT"
+      - "iptables -P INPUT DROP"
+      - "iptables -P OUTPUT ACCEPT"
+      - "iptables -P FORWARD ACCEPT"
+
   roles:
     - geerlingguy.swap
     - geerlingguy.clamav
     - geerlingguy.security
     - geerlingguy.firewall
-
+    - geerlingguy.docker
